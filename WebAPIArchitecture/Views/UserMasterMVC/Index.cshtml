@@ -1,0 +1,345 @@
+﻿@{
+    Layout = "_LayoutPage";
+    ViewBag.Title = "User Master";
+}
+
+<div class="container-fluid box">
+    <div class="chartbg">
+        <div class="row">
+            <div class="col-12">
+                <div class="d-flex justify-content-between">
+                    <h3>User Master</h3>
+                    <div>
+                        <button class="btn btn-outline-success button-spacing" type="button" onclick="searchFromForm()">Search</button>
+                        <button class="btn btn-grey" type="button" onclick="clearForm()">Clear</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <hr>
+        <div class="row">
+
+            <div class="col-12 col-sm-6 col-md-3">
+                <div class="card-body">
+                    <div class="form-group">
+                        <label for="FirstName">First Name</label>
+                        <input type="text" class="form-control" id="fName" name="fName" placeholder="Enter first name" required>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-sm-6 col-md-3">
+                <div class="card-body">
+                    <div class="form-group">
+                        <label for="LastName">Last Name</label>
+                        <input type="text" class="form-control" id="lName" name="lName" placeholder="Enter last name" required>
+                    </div>
+                </div>
+            </div>
+            <div class="col-12 col-sm-6 col-md-3">
+                <div class="card-body">
+                    <div class="form-group">
+                        <label for="ContactNumber">Contact Number</label>
+                        <input type="number" class="form-control" id="cntNumber" name="cntNumber" placeholder="Enter Contact Number" required maxlength="10" min="10">
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-sm-6 col-md-3">
+                <div class="card-body">
+                    <div class="form-group">
+                        <label for="mailId">Email Id</label>
+                        <input type="email" class="form-control" id="emailId" name="emailId" placeholder="Enter email Id" required>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-sm-6 col-md-3">
+                <div class="card-body">
+                    <div class="form-group">
+                        <label for="UserRole">User Role</label>
+                        <select class="form-control" id="UserRole" name="UserRole">
+                            <option value="0">-- Select Role --</option>
+                        </select>
+                    </div>
+                </div>
+            </div>
+
+            <div class="col-12 col-sm-6 col-md-3">
+                <div class="card-body">
+                    <div class="form-group">
+                        <label for="IsActive">Is Active</label>
+                        <input type="checkbox" class="form-control" id="IsActive" name="IsActive" placeholder="Check If Active User" required>
+                    </div>
+                </div>
+            </div>
+        </div>
+        <div class="row"> @* All hidden *@
+            <input type="hidden" id="Id" value="0" />
+        </div>
+        <div class="row">
+            <div class="col-12">
+                <div class="form-group">
+                    <div class="d-flex justify-content-end">
+                        <button class="btn btn-outline-success" onclick="addUser()" type="button">Submit</button>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+    </div>
+</div>
+
+<div class="container-fluid box">
+    <div class="chartbg">
+        <div class="row">
+            <div class="col-12">
+                <div id="Header-grid" data-step="6" data-intro="Header Info"></div>
+                <table id="UserMaster" class="table table-striped table-bordered w-100">
+                </table>
+            </div>
+        </div>
+    </div>
+</div>
+
+@section Scripts {
+<script type="text/javascript">
+
+    $(document).ready(function() {
+            getUseRoles();
+        LoadHeaderGrid();
+        $('[data-toggle="tooltip"]').tooltip();
+    });
+
+
+    function LoadHeaderGrid() {
+        if ($.fn.DataTable.isDataTable('#UserMaster')) {
+            $('#UserMaster').DataTable().clear().destroy();
+        }
+        $('#UserMaster').DataTable({
+            "dom": 'Blfrtip',
+            //"sScrollY": '50vh',
+            //"sScrollX": true,
+            // "initComplete": function (settings, json) {
+            //     $("#UserMaster").wrap("<div id='UserMasterParent' style='overflow:auto; width:100%;position:relative;'></div>");
+            // },
+            "scrollCollapse": true,
+                "processing": true, // for show progress bar
+            "serverSide": false, // for process server side
+            "filter": false, // this is for disable filter (search box)
+            "orderMulti": false, // for disable multiple column at once
+            "ordering": false,
+            "drawCallback": function (settings) {
+                //onDataBound();
+            },
+            //"fixedColumns": {
+            //    leftColumns: 0
+            //},
+            "ajax": {
+                "url": "/UserMasterMVC/GetAllUsers",
+                "type": "POST",
+                "datatype": "json",
+                "data": function () {
+                    return getFormData();
+                }
+            },
+                "columns": [
+                    { data: "id", title: "Id" },
+                    { data: "firstName", title: "First Name" },
+                    { data: "lastName", title: "Last Name" },
+                    { data: "userName", title: "User Name" },
+                    { data: "roles", title: "Role" },
+                    { data: "contactNumber", title: "Contact Number" },
+                    { data: "email", title: "Email" },
+                    {
+                        data: "isActive",
+                        title: "Is Active",
+                        render: function (data) {
+                            return data
+                                ? "<i class='fa fa-check text-success'></i>"
+                                : "<i class='fa fa-times text-danger'></i>";
+                        }
+                    },
+                    {
+                        data: "id",
+                        title: "Action",
+                        render: function (data) {
+                            return `
+                                <a href="javascript:void(0);" onclick="updatUser('${data}')">
+                            <i class="fas fa-edit text-primary"></i>
+                        </a>
+                        <a href="javascript:void(0)"
+                                   onclick="deleteUser('${data}');">
+                            <i class="fas fa-trash text-danger"></i>
+                        </a>
+                    `;
+                        }
+                    }
+                ],
+
+            "columnDefs": [
+                {
+                    "targets": "_all",
+                    "className": "text-center",
+                    "autoWidth": true
+                }],
+                "lengthMenu": [[5, 10, 20, 40], [5, 10, 20, 40]],
+            //"lengthMenu": [[2, 3, 4, 6], [2, 3, 4, 6]],
+            "buttons": []
+        });
+    }
+
+    function getToolTip(Days, ApprovedBy) {
+        var tooltip = '';
+        tooltip += 'Days: ' + Days + '\n';
+        tooltip += 'Approved By: ' + ApprovedBy + '\n';
+        return tooltip;
+    }
+
+    function getIcon(status) {
+
+        if (status == false) {
+            return "<i class='fa fa-times text-danger'  aria-hidden='true'></i>"
+        }
+        else {
+            return "<i class='fa fa-check text-success'  aria-hidden='true'></i>"
+        }
+
+    }
+
+    function getFormData() {
+        
+        return {
+                FirstName: $('#fName').val().trim(),
+                LastName: $('#lName').val().trim(),
+                Email: $('#emailId').val().trim(),
+                ContactNumber: $('#cntNumber').val().trim(),
+                Roles: 'Null',
+                UserName: 'Null',
+                Id: $('#Id').val(),
+                UserRole: $('#UserRole').val()
+        };
+
+    }
+
+    function AddUser() {
+        const formData = getFormData();
+        console.log(formData);
+    }
+
+    function clearForm() {
+        $('#fName').val('');
+        $('#lName').val('');
+        $('#cntNumber').val('');
+            $('#emailId').val('');
+            $('#UserRole').val('0');
+            $('#emailId').prop('readonly', false);
+    }
+
+    function searchFromForm() {
+        LoadHeaderGrid();
+    }
+
+    function addUser() {
+        var formData = getFormData();
+
+        $.ajax({
+            url: '/UserMasterMVC/AddUser',
+            type: 'POST',
+            data: formData,
+            success: function (response) {
+                if (response.result) {
+                        new Notyf().success(response.message);
+                        clearForm();
+                        LoadHeaderGrid();
+                } else {
+                    new Notyf().error(response.message);
+                }
+            },
+            error: function (err) {
+                console.error(err);
+            }
+        });
+    }
+
+    function deleteUser(id) {
+
+            showConfirm("Are you sure?", function (result) {
+            if (result) {
+                    $.ajax({
+                url: '/UserMasterMVC/DeleteUser',
+                type: 'POST',
+                data: { id: id },
+                success: function (response) {
+                    if (response.result) {
+                        new Notyf().success(response.message);
+                        LoadHeaderGrid();
+                    } else {
+                        new Notyf().error(response.message);
+                    }
+                },
+                error: function (err) {
+                    console.error(err);
+                }
+            });
+
+                const notyf = new Notyf();
+                notyf.success("Deleted successfully");
+            }
+            else{
+                return;
+            }
+        });
+        
+    }
+
+    function updatUser(id) {
+        $.ajax({
+                url: '/UserMasterMVC/UpdateUser',
+                type: 'POST',
+            data: { Id: id },
+            success: function (response) {
+                if (response.result) {
+                    $('#fName').val(response.data.firstName);
+                        $('#lName').val(response.data.lastName);
+                        $('#cntNumber').val(response.data.contactNumber);
+                        $('#emailId').val(response.data.email);
+                    $('#Id').val(response.data.id);
+                            //console.log(response.data.userRole);
+                                $('#UserRole').val(response.data.userRole);
+                        $('#emailId').prop('readonly', true);
+                                $('#IsActive').prop('checked', response.data.isActive);
+
+                }else{
+                    new Notyf().error(response.message);
+                }
+            }
+        })
+    }
+
+        function getUseRoles() {
+            $.ajax({
+                url: '/RolesMasterMVC/getRolesForDropdown',
+                type: 'GET',
+                success: function (response) {
+
+                    $('#UserRole').empty();
+                    $('#UserRole').append('<option value="0">-- Select Role --</option>');
+
+                    $.each(response, function (index, item) {
+                        $('#UserRole').append(
+                            $('<option></option>')
+                                .val(item.value)
+                                .text(item.text)
+                        );
+                    });
+                },
+                error: function (err) {
+                    new Notyf().error('Failed to load roles');
+                    console.error(err);
+                }
+            });
+        }
+
+</script> 
+}

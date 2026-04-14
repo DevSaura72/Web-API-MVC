@@ -1,0 +1,156 @@
+﻿
+<style id="notificationCSS">
+    /* CSS used here will be applied after bootstrap.css */
+
+    /*.dropdown {
+            display: inline-block;
+            margin-left: 20px;
+            padding: 10px;
+        }*/
+    .notifications {
+        min-width: 420px;
+    }
+
+    .notifications-wrapper {
+        overflow: auto;
+        max-height: 250px;
+    }
+
+    .menu-title {
+        color: #ff7788;
+        font-size: 1.0rem;
+        display: inline-block;
+    }
+
+    .notification-heading, .notification-footer {
+        padding: 2px 10px;
+    }
+
+    .dropdown-menu.divider {
+        margin: 5px 0;
+    }
+
+    .item-title {
+        font-size: 1.0rem;
+        color: #000;
+    }
+
+    .notifications a.content {
+        text-decoration: none;
+        background: #dfdfdf !important;
+    }
+
+    .notification-item {
+        padding: 10px;
+        margin: 5px;
+        background: #dfdfdf !important;
+        border-radius: 4px;
+    }
+
+        .notification-item p.item-info {
+            color: black
+        }
+</style>
+<nav class="main-header navbar navbar-expand navbar-white navbar-light">
+    <!-- Left navbar links & Logo-->
+    <ul class="navbar-nav">
+        <li class="nav-item">
+            <a class="nav-link" data-widget="pushmenu" href="#" role="button"><i class="fa fa-bars"></i></a>
+        </li>
+    </ul>
+    <!-- top navbar links -->
+    <ul class="navbar-nav ml-auto">
+        <li class="nav-item dropdown">
+            <a class="nav-link dropdown-toggle" data-toggle="dropdown" href="#">
+                @System.Globalization.CultureInfo.CurrentUICulture.TwoLetterISOLanguageName.ToUpper()
+            </a>
+            <div class="dropdown-menu dropdown-menu-right">
+                <form method="post" asp-controller="Home" asp-action="SetLanguage">
+                    <button class="dropdown-item" type="submit" name="culture" value="en">English</button>
+                    <button class="dropdown-item" type="submit" name="culture" value="hi">हिंदी</button>
+                    <button class="dropdown-item" type="submit" name="culture" value="mr">मराठी</button>
+                </form>
+            </div>
+        </li>
+
+        <!-- Notifications Dropdown Menu -->
+        @if (User.Identity.IsAuthenticated)
+        {
+            <li class="nav-item dropdown" id="notifications_menu">
+                <a class="nav-link" data-toggle="dropdown" href="#">
+                <i class="fa fa-bell  animated" aria-hidden="true" id="notification_bell_icon" style="font-size:25px;"></i>
+                <span class="badge badge-info navbar-badge animated" data-bind="text:_notificationCount"></span>
+                @*<i class="fa fa-tint faa-pulse animated noti" style="color:#C80065 !important;" data-bind="text:_notificationCount" aria-hidden="true"></i>*@
+            </a>
+            <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right notifications">
+                <span class="dropdown-item dropdown-header">
+                    <span data-bind="text:_notificationCount" id="notification_count"></span> New notification(s)
+                    @*<a href="#" class="mark-all-read text-aqua btn-link" id="btnMarkAllRead" data-bind="visible: _showReadAll">
+                    Read all
+                    </a>*@
+                </span>
+                <div class="dropdown-divider"></div>
+                <div data-bind="foreach:_lstNotifications" class="notifications-wrapper">
+                    @*<div class="notification-item">*@
+                    <a class="content" data-bind="attr:{ title:$data.TitleText, href: $data.EntityReferenceURL, class: $data._IsRead }, click : $data.markAsRead ">
+                        <div class="notification-item" data-bind="html: $data.DisplayNotificationText">
+                            <h4 class="item-title"></h4>
+                            <p class="item-info"></p>
+                        </div>
+                    </a>
+                    @*</div>*@
+                </div>
+                <div class="dropdown-divider"></div>
+                <a id="btnNotificationViewAll" href="/Foundation/Notifications/Index" class="dropdown-item dropdown-footer">See All Notifications</a>
+            </div>
+        </li>
+
+            <li class="nav-item dropdown">
+                <a class="nav-link" data-toggle="dropdown" href="#">
+                    <ul id="profileimg">
+                        <li>@* <div class="pro_img" style="background-image: url('/wwwroot/images/user.png');"></div> *@</li>
+                        <li><span>@L.Get("Welcome").. @User.Identity.Name</span> <i class="fa fa-chevron-down" aria-hidden="true"></i></li>
+                        <li><img src="~/images/user.png" alt="A" class="rounded-circle" style="width: 30px; height: 30px;"></li>
+                    </ul>
+                </a>
+                <div class="dropdown-menu dropdown-menu-lg dropdown-menu-right">
+                    <div class="dropdown-divider"></div>
+                    <a href="/Master/UserProfile/UpdateProfile" class="dropdown-item">
+                        <i class="fa fa-user-circle-o sg_fa" aria-hidden="true"></i> My Profile
+                    </a>
+                    @if (true)//!User.Identity.SingleSignOn())
+                    {
+                        <div class="dropdown-divider"></div>
+                        <a href="/AuthMVC/ChangePassword" class="dropdown-item">
+                            <i class="fa fa-plus-square-o sg_fa" aria-hidden="true"></i> Change password
+                        </a>
+                    }
+                    <div class="dropdown-divider"></div>
+                    <a href="/AuthMVC/Logout" class="dropdown-item">
+                        <i class="fa fa-sign-out sg_fa" aria-hidden="true"></i> Logout
+                    </a>
+                </div>
+            </li>
+        }
+        else
+        {
+            <li class="nav-item">
+                <a class="nav-link" href="/AuthMVC/Login">@L.Get("Login")</a>
+            </li>
+            <li class="nav-item">
+                <a class="nav-link" href="/AuthMVC/Register">@L.Get("Register")</a>
+            </li>
+        }
+        
+    </ul>
+</nav>
+
+@section Scripts{
+
+    @* <script>
+        function setLang(lang) {
+            document.getElementById('cultureField').value = lang;
+            document.getElementById('langForm').submit();
+        }
+    </script> *@
+}

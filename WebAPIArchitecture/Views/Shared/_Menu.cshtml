@@ -1,0 +1,68 @@
+﻿@model Architecture.Web.Services.SiteMapNode
+@{
+    string url = !string.IsNullOrEmpty(Model.Controller) && !string.IsNullOrEmpty(Model.Action) ? Url.Action(Model.Action, Model.Controller, new { area = Model.Area }) : "#";
+}
+<style>
+
+    .nav-item .nav-treeview {
+        display: none;
+    }
+
+    .nav-item.menu-open > .nav-treeview {
+        display: block;
+    }
+
+    .nav-sidebar .nav-treeview {
+        background-color: #343a40; /* Dark background */
+        padding-left: 10px;
+    }
+
+        .nav-sidebar .nav-treeview .nav-item {
+            margin-left: 10px;
+        }
+
+        .nav-sidebar .nav-treeview .nav-link {
+            color: #c2c7d0 !important; /* Light text */
+        }
+
+            .nav-sidebar .nav-treeview .nav-link:hover {
+                background-color: #495057 !important; /* Dark hover */
+                color: white !important;
+            }
+
+</style>
+
+
+@if (Model.Visible && !ViewData.ContainsKey(Model.SystemName))  // ✅
+{
+    ViewData[Model.SystemName] = true;  // ✅
+
+    if (Model.ChildNodes.Any())
+    {
+        <li class="nav-item has-treeview">
+            <a class="nav-link" href="#">
+                <i class="@Model.IconClass"></i>
+                <p>
+                    @Model.SystemName
+                    <i class="fa fa-angle-left right"></i>
+                </p>
+            </a>
+            <ul class="nav nav-treeview">
+                @foreach (var child in Model.ChildNodes)
+                {
+                    @await Html.PartialAsync("_Menu", child)
+                }
+            </ul>
+        </li>
+    }
+    else
+    {
+        <li class="nav-item">
+            <a class="nav-link" href="@url">
+                <i class="@Model.IconClass nav-icon"></i>
+                <p>@Model.SystemName</p>
+            </a>
+        </li>
+    }
+}
+

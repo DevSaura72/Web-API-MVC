@@ -1,0 +1,33 @@
+﻿@model List<Architecture.Web.Services.SiteMapNode>
+
+<aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <a href="/" class="brand-link text-center">
+        <span class="brand-text font-weight-bold">ARCHITECTURE</span>
+    </a>
+    <div class="sidebar">
+        <nav class="mt-2">
+            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+
+                <!-- SEARCH FORM -->
+                <li class="nav-item has-treeview menu-open">
+                    <form class="form-inline" style="margin:0px">
+                        <div class="input-group input-group-md">
+                            <input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
+                            <div class="input-group-append">
+                                <button class="btn btn-navbar" type="submit">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </li>
+
+                <!-- Loop through Sitemap -->
+                @foreach (var node in Model)
+                {
+                    @await Html.PartialAsync("_Menu", node)
+                }
+            </ul>
+        </nav>
+    </div>
+</aside>

@@ -1,0 +1,74 @@
+CREATE TABLE AspNetUsers (
+    Id AUTOINCREMENT PRIMARY KEY,
+    FirstName TEXT,
+    LastName TEXT,
+    UserName TEXT,
+    NormalizedUserName TEXT,
+    Email TEXT,
+    NormalizedEmail TEXT,
+    EmailConfirmed YESNO,
+    PasswordHash MEMO,
+    SecurityStamp MEMO,
+    ConcurrencyStamp MEMO,
+    PhoneNumber TEXT(50),
+    PhoneNumberConfirmed YESNO,
+    TwoFactorEnabled YESNO,
+    LockoutEnd DATETIME,
+    LockoutEnabled YESNO,
+    IsActive YESNO,
+    AccessFailedCount INTEGER
+);
+==================================================================================================================================
+CREATE TABLE AspNetRoles (
+    Id AUTOINCREMENT PRIMARY KEY,
+    Name TEXT,
+    NormalizedName TEXT,
+    ConcurrencyStamp MEMO
+);
+==================================================================================================================================
+CREATE TABLE AspNetUserRoles (
+    UserId INTEGER,
+    RoleId INTEGER,
+
+    CONSTRAINT FK_UserRoles_Users FOREIGN KEY (UserId) REFERENCES AspNetUsers(Id),
+    CONSTRAINT FK_UserRoles_Roles FOREIGN KEY (RoleId) REFERENCES AspNetRoles(Id)
+);
+==================================================================================================================================
+CREATE TABLE AspNetUserClaims (
+    Id AUTOINCREMENT PRIMARY KEY,
+    UserId INTEGER,
+    ClaimType MEMO,
+    ClaimValue MEMO,
+
+    CONSTRAINT FK_UserClaims_Users FOREIGN KEY (UserId) REFERENCES AspNetUsers(Id)
+);
+==================================================================================================================================
+CREATE TABLE AspNetRoleClaims (
+    Id AUTOINCREMENT PRIMARY KEY,
+    RoleId INTEGER,
+    ClaimType MEMO,
+    ClaimValue MEMO,
+
+    CONSTRAINT FK_RoleClaims_Roles FOREIGN KEY (RoleId) REFERENCES AspNetRoles(Id)
+);
+==================================================================================================================================
+CREATE TABLE AspNetUserTokens (
+    Id AUTOINCREMENT PRIMARY KEY,
+    UserId INTEGER,
+    LoginProvider TEXT,
+    Name TEXT,
+    [Value] MEMO,
+
+    CONSTRAINT FK_UserTokens_Users FOREIGN KEY (UserId) REFERENCES AspNetUsers(Id)
+);
+==================================================================================================================================
+CREATE TABLE AspNetUserLogins (
+    Id AUTOINCREMENT PRIMARY KEY,
+    LoginProvider TEXT,
+    ProviderKey TEXT,
+    ProviderDisplayName TEXT,
+    UserId INTEGER,
+
+    CONSTRAINT FK_UserLogins_Users FOREIGN KEY (UserId) REFERENCES AspNetUsers(Id)
+);
+==================================================================================================================================

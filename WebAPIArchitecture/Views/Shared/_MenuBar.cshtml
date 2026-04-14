@@ -1,0 +1,84 @@
+﻿@* @{
+    //load sitemap
+    var siteMap = new xmlSiteMap();
+    siteMap.Load("~/wwwroot/sitemap.config");
+    var loggedInUserRoles = User.Identity.GetRole();
+}
+<!-- Main Sidebar Container -->
+<aside class="main-sidebar sidebar-dark-primary elevation-4 ex_slide" id="navtop">
+    <a href="/Home/Index" class="brand-link text-center">
+        <span class="brand-text font-weight-bold">DRP</span>
+    </a>
+    <div class="sidebar">
+        <nav class="mt-2">
+            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+                <!-- SEARCH FORM -->
+                <li class="nav-item has-treeview menu-open">
+                    <form class="form-inline" style="margin:0px">
+                        <div class="input-group input-group-md">
+                            <input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
+                            <div class="input-group-append">
+                                <button class="btn btn-navbar" type="submit">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </li>
+                <li class="nav-item has-treeview menu-open" style="text-align:center;">
+                    <a href="#" class="nav-link time" style="background-color:transparent !important">
+                        <p class="sc_lg">Last Login:<span> @* @User.Identity.GetLastLogin() </span></p><br>
+                    </a>
+                </li>
+
+                @foreach (var node in siteMap.siteMapNodes)
+                {
+                    if (node.Visible)
+                    {
+                        @Html.Partial("_Menu", node)
+                    }
+                }
+
+            </ul>
+        </nav>
+    </div>
+</aside> *@
+
+@model List<Architecture.Web.Services.SiteMapNode>
+
+<aside class="main-sidebar sidebar-dark-primary elevation-4">
+    <a href="/" class="brand-link text-center">
+        <span class="brand-text font-weight-bold">DRP</span>
+    </a>
+    <div class="sidebar">
+        <nav class="mt-2">
+            <ul class="nav nav-pills nav-sidebar flex-column" data-widget="treeview" role="menu" data-accordion="false">
+
+                <!-- SEARCH FORM -->
+                <li class="nav-item has-treeview menu-open">
+                    <form class="form-inline" style="margin:0px">
+                        <div class="input-group input-group-md">
+                            <input class="form-control form-control-navbar" type="search" placeholder="Search" aria-label="Search">
+                            <div class="input-group-append">
+                                <button class="btn btn-navbar" type="submit">
+                                    <i class="fa fa-search"></i>
+                                </button>
+                            </div>
+                        </div>
+                    </form>
+                </li>
+
+                <!-- Loop through Sitemap -->
+                @foreach (var node in Model)
+                {
+                    @await Html.PartialAsync("_Menu", node)
+                }
+            </ul>
+        </nav>
+    </div>
+</aside>
+
+
+
+
+                    

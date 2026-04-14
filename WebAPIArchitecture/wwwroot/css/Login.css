@@ -1,0 +1,16 @@
+﻿.login-left {
+    background: #ffffff;
+    padding: 40px;
+}
+
+.login-right {
+    background-image: url('../images/loginBackground.jpg');
+    background-size: cover;
+    background-position: center;
+}
+
+@media (max-width: 768px) {
+    .login-right {
+        height: 300px;
+    }
+}
