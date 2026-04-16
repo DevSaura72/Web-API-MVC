@@ -4,7 +4,7 @@
 }
 
 .login-right {
-    background-image: url('../images/loginBackground.jpg');
+    background-image: url('../images/LoginBgNew.jpg');
     background-size: cover;
     background-position: center;
 }
@@ -14,3 +14,38 @@
         height: 300px;
     }
 }
+
+
+.login-actions {
+    margin-top: 10px;
+}
+
+    .login-actions .btn {
+        margin-top: 10px;
+    }
+
+.divider {
+    text-align: center;
+    margin: 15px 0;
+    color: #888;
+    font-size: 12px;
+    position: relative;
+}
+
+    .divider::before,
+    .divider::after {
+        content: "";
+        height: 1px;
+        width: 40%;
+        background: #ddd;
+        position: absolute;
+        top: 50%;
+    }
+
+    .divider::before {
+        left: 0;
+    }
+
+    .divider::after {
+        right: 0;
+    }

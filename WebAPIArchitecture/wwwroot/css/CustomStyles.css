@@ -3087,3 +3087,7 @@ ul.menu {
     }
 }
 
+/* Ensure full height */
+.main-sidebar {
+    height: 100vh;
+}
